@@ -121,17 +121,6 @@ function list_operator(operation, arg1, arg2) {
                 $('#base').css('display', show == 'block' ? 'none' : 'block');
             }
         })
-
-        var start_snack = mdui.snackbar({
-            message: "按 K 隐藏悬浮框",
-            buttonText: 'OK',
-            onButtonClick: function() {
-                start_snack.close();
-                log('fuck');
-            }
-        });
-        
-        
         
         res.copy_direct_url = function () { //TODO 名称修改
 
@@ -213,5 +202,13 @@ function list_operator(operation, arg1, arg2) {
 
 $(document).ready(function () {
     createFloatBox();
+    
+    mdui.mutation();
+
+    mdui.snackbar({
+        message: "按 K 隐藏悬浮框",
+        buttonText: 'OK',
+    });
+
     mdui.mutation();
 })
