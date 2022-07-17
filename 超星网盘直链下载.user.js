@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         超星网盘直链下载
 // @namespace    NEKO_CXNDDL
-// @version      1.0.1
+// @version      1.1
 // @description  多选下载应该是它最大的功能了
 // @author       NekoRectifier
 // @match        https://pan-yz.chaoxing.com/
@@ -11,6 +11,10 @@
 // @require      https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js
 // @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js
 // ==/UserScript==
+
+//=============== CUSTOM VARIABLES ================
+var aria_url = "http://127.0.0.1:6800/jsonrpc"
+var aria_method = "POST"
 
 var _item_num = 0;
 var succeededFilenames;
@@ -61,6 +65,38 @@ function download(pos, url, name) {
         onprogress: function (xhr) {
             var percent = (xhr.loaded / xhr.total) * 100.0;
             list_operator(2, pos, percent.toFixed(2));
+        }
+    })
+}
+
+function download_aria(url, name){
+    //url is single str now!
+    var req = 
+    {
+        id:'',
+        jsonrpc: '2.0',
+        method: 'aria2.addUri',
+        params: [
+            [url],
+            {
+                out: name,
+                header : [
+                    'referer: https://i.chaoxing.com'
+                ]
+            }
+        ]
+    };
+
+    $.ajax({
+        url: aria_url,
+        type: aria_method,
+        crossDomain: true,
+        processData: false,
+        data: JSON.stringify(req),
+        contentType: 'application/json',
+        
+        success: function(res) {
+            console.log(res)
         }
     })
 }
@@ -174,13 +210,18 @@ function list_operator(operation, arg1, arg2) {
                         //multi file downloads
                         for (var i = 0; i < succeededUrlsAmount; i++) {
                             list_operator(0, succeededFilenames[i]);
-                            download(_item_num, succeededUrls[i], succeededFilenames[i]);
+                            // download(_item_num, succeededUrls[i], succeededFilenames[i]);
+                            download_aria(succeededUrls[i], succeededFilenames[i])
                         }
                     } else {
                         //single file
                         list_operator(0, succeededFilenames[0]);
-                        download(_item_num, succeededUrls[0], succeededFilenames[0]);
+                        // download(_item_num, succeededUrls[0], succeededFilenames[0]);
+                        download_aria(succeededUrls[0], succeededFilenames[0])
                     }
+
+                    alert('请在 aria2 管理页面查看下载任务');
+
                 }
                 if (failedUrlsAmount > 0) {
                     mudi.alert(
@@ -201,14 +242,14 @@ function list_operator(operation, arg1, arg2) {
 })();
 
 $(document).ready(function () {
-    createFloatBox();
+    // createFloatBox();
     
-    mdui.mutation();
+    //mdui.mutation();
 
-    mdui.snackbar({
-        message: "按 K 隐藏悬浮框",
-        buttonText: 'OK',
-    });
+    // mdui.snackbar({
+    //     message: "按 K 隐藏悬浮框",
+    //     buttonText: 'OK',
+    // });
 
-    mdui.mutation();
+    //mdui.mutation();
 })
