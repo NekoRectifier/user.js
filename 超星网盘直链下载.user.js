@@ -134,7 +134,7 @@ function accquire_actual_url(filenode) {
             download_aria(succeededUrls[0], succeededFilenames[0])
         }
 
-        alert('链接已复制；\nAria2 下载已开始');
+        alert('链接已复制；\n已发送 Aria2 Json-Rpc 请求');
         copyToClipboard(succeededUrls);
     }
     if (failedUrlsAmount > 0) {
