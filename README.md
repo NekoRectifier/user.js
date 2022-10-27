@@ -1,2 +1,2 @@
 # user.js
-A repo for myself created user.js
+A repo for my own user.js
